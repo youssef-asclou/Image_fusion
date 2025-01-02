@@ -1,0 +1,159 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusion - Fusionner images en ligne</title>
+    <script src="{% static 'js/fusion.js' %}"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #2A9D8F;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .navbar {
+            background-color: transparent;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+        }
+        
+        .logo img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+        
+        .btn-signup {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+        
+        .main-content {
+            display: flex;
+            justify-content: space-between;
+            padding: 50px;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .text-content {
+            color: white;
+            max-width: 550px;
+            padding-top: 50px;
+        }
+        
+        .text-content h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            line-height: 1.2;
+        }
+        
+        .text-content p {
+            font-size: 18px;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .btn-fusion {
+            background-color: #E9ECEF;
+            color: #333;
+            padding: 15px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .image-collage {
+            position: relative;
+            width: 600px;
+            height: 500px;
+        }
+        
+        .image-collage .photos {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 400px;
+            height: 400px;
+            z-index: 5;
+            transform: rotate(5deg);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">
+            <img src="{% static 'photos/logo.jpg' %}" alt="Fusion Logo">
+            <span style="color: white; font-size: 20px;">Fusion</span>
+        </a>
+        <div class="nav-links">
+            <a href="#">Home</a>
+            <a href="#">Fusionner image</a>
+            <a href="#">À propos</a>
+            <a href="{% url 'login' %}">Se connecter</a>
+            <a href="{% url 'signup' %}" class="btn-signup">S'inscrire</a>
+        </div>
+    </nav>
+
+    <div class="main-content">
+        <div class="text-content">
+            <h1>Fusionner image en ligne en quelques secondes</h1>
+            <p>Créez des compositions visuelles uniques en quelques secondes, simplement et rapidement. Téléchargez vos photos et laissez notre application faire le reste.</p>
+            <div id="download-container" style="display:none;">
+                <!-- <a id="download-link" href="#" download="fused_image.png">
+            <button>Télécharger</button>
+        </a> -->
+            </div>
+        </div>
+        <div class="image-collage">
+            <img src="{% static 'photos/fusion.png' %}" alt="Photo Collection" class="photos">
+        </div>
+    </div>
+    <script>
+        document.getElementById('download-link').addEventListener('click', function() {});
+    </script>
+</body>
+
+</html>

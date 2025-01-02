@@ -1,0 +1,358 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fusion d'images</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        
+        .navbar {
+            background-color: rgba(33, 33, 33, 0.95);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 48px;
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo-img {
+            width: 24px;
+            height: 24px;
+            transform: rotate(-10deg);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            margin-left: 48px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .right-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .download-btn {
+            background-color: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 6px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .download-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .lang-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .dropzone-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-bottom: 32px;
+        }
+        
+        .dropzone {
+            width: 400px;
+            /* Augmenté de 300px à 400px */
+            height: 400px;
+            /* Augmenté de 300px à 400px */
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            position: relative;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+        
+        .dropzone:hover {
+            border-color: #0066ff;
+        }
+        
+        .upload-icon {
+            width: 48px;
+            /* Augmenté de 32px à 48px */
+            height: 48px;
+            /* Augmenté de 32px à 48px */
+            background-color: #666;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .image-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+            display: none;
+        }
+        
+        .dropzone.has-image .image-preview {
+            display: block;
+        }
+        
+        .dropzone.has-image .upload-icon {
+            display: none;
+        }
+        
+        .result-container {
+            max-width: 800px;
+            margin: 0 auto 32px auto;
+            display: none;
+        }
+        
+        .result-container.visible {
+            display: block;
+        }
+        
+        .result-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fusion-btn {
+            background-color: #0066ff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 24px;
+            font-size: 14px;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            min-width: 200px;
+        }
+        
+        .fusion-btn:hover {
+            background-color: #0052cc;
+        }
+        
+        .fusion-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin: 16px 0;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div style="display: flex; align-items: center;">
+            <div class="logo-container">
+                <img src="{% static 'photos/logo.png' %}" alt="Logo Fusion" class="logo-img">
+                <span style="color: white; font-size: 14px;">Fusion</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Home</a>
+                <a href="#" class="nav-link">Fusionner image</a>
+                <a href="#" class="nav-link">À propos</a>
+            </div>
+        </div>
+        <div class="right-controls">
+            <button class="download-btn" id="download-btn" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                </svg>
+                Télécharger
+            </button>
+            <button class="lang-btn">YA</button>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="dropzone-container">
+            <div class="dropzone" id="zone1" onclick="document.getElementById('upload1').click()">
+                <div class="upload-icon">↑</div>
+                <img class="image-preview" alt="Preview 1">
+                <input type="file" id="upload1" hidden accept="image/*">
+            </div>
+            <div class="dropzone" id="zone2" onclick="document.getElementById('upload2').click()">
+                <div class="upload-icon">↑</div>
+                <img class="image-preview" alt="Preview 2">
+                <input type="file" id="upload2" hidden accept="image/*">
+            </div>
+        </div>
+
+        <div class="result-container">
+            <img src="" alt="Image fusionnée" class="result-image" id="fused-result">
+        </div>
+
+        <div class="error-message" id="error-message"></div>
+
+        <button class="fusion-btn" onclick="fusionnerImages()" id="fusion-btn">Fusionner les images</button>
+    </div>
+
+    <script>
+        let fusedImageData = null;
+
+        function showError(message) {
+            const errorElement = document.getElementById('error-message');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function hideError() {
+            document.getElementById('error-message').style.display = 'none';
+        }
+
+        function handleFileSelect(event, zoneId) {
+            const file = event.target.files[0];
+            const zone = document.getElementById(zoneId);
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const preview = zone.querySelector('.image-preview');
+                    preview.src = e.target.result;
+                    zone.classList.add('has-image');
+                    hideError();
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        document.getElementById('upload1').addEventListener('change', (e) => handleFileSelect(e, 'zone1'));
+        document.getElementById('upload2').addEventListener('change', (e) => handleFileSelect(e, 'zone2'));
+
+        // Gestion du drag & drop
+        ['zone1', 'zone2'].forEach(zoneId => {
+            const zone = document.getElementById(zoneId);
+
+            zone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                zone.style.borderColor = '#0066ff';
+            });
+
+            zone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                zone.style.borderColor = '#ccc';
+            });
+
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.style.borderColor = '#ccc';
+                const file = e.dataTransfer.files[0];
+                if (file && file.type.startsWith('image/')) {
+                    const input = zone.querySelector('input[type="file"]');
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    input.files = dataTransfer.files;
+                    const event = new Event('change');
+                    input.dispatchEvent(event);
+                }
+            });
+        });
+
+        async function fusionnerImages() {
+            const file1 = document.getElementById('upload1').files[0];
+            const file2 = document.getElementById('upload2').files[0];
+
+            if (!file1 || !file2) {
+                showError('Veuillez sélectionner les deux images avant de fusionner.');
+                return;
+            }
+
+            const fusionBtn = document.getElementById('fusion-btn');
+            fusionBtn.disabled = true;
+            hideError();
+
+            const formData = new FormData();
+            formData.append('image1', file1);
+            formData.append('image2', file2);
+
+            try {
+                const response = await fetch('/fusion/', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'ok') {
+                    fusedImageData = 'data:image/png;base64,' + data.fused_image;
+                    const fusedImg = document.getElementById('fused-result');
+                    fusedImg.src = fusedImageData;
+                    document.querySelector('.result-container').classList.add('visible');
+                    document.getElementById('download-btn').disabled = false;
+                } else {
+                    throw new Error(data.message || 'Erreur lors de la fusion');
+                }
+            } catch (err) {
+                showError(err.message || 'Une erreur est survenue lors de la fusion');
+            } finally {
+                fusionBtn.disabled = false;
+            }
+        }
+
+        document.getElementById('download-btn').addEventListener('click', () => {
+            if (fusedImageData) {
+                const link = document.createElement('a');
+                link.href = fusedImageData;
+                link.download = 'image_fusionnee.png';
+                link.click();
+            }
+        });
+    </script>
+</body>
+
+</html>

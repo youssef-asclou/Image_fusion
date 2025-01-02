@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fusion - Fusionner images en ligne</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #2A9D8F;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Styles de la page d'arrière-plan (copiés de votre code original) */
+    .navbar {
+      background-color: transparent;
+      padding: 20px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      filter: blur(5px);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .logo img {
+      width: 50px;
+      height: 50px;
+      margin-right: 10px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .main-content {
+      display: flex;
+      justify-content: space-between;
+      padding: 50px;
+      max-width: 1400px;
+      margin: 0 auto;
+      position: relative;
+      filter: blur(5px);
+    }
+
+    .text-content {
+      color: white;
+      max-width: 550px;
+      padding-top: 50px;
+    }
+
+    .text-content h1 {
+      font-size: 42px;
+      margin-bottom: 20px;
+      font-weight: bold;
+      line-height: 1.2;
+    }
+
+    .text-content p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    /* Styles de la modal de login */
+    .login-modal {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background-color: rgba(0, 0, 0, 0.8);
+      padding: 40px;
+      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
+      z-index: 1000;
+    }
+
+    .login-modal h2 {
+      color: white;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 24px;
+    }
+
+    .login-form input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border: none;
+      border-radius: 5px;
+      background-color: #f8f9fa;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 12px;
+      background-color: #2A9D8F;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    .login-btn:hover {
+      background-color: #248277;
+    }
+
+    .social-login {
+      text-align: center;
+      color: white;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 15px;
+    }
+
+    .social-icons a {
+      color: white;
+      font-size: 24px;
+      text-decoration: none;
+    }
+
+    /* Pour créer l'effet de flou sur tout l'arrière-plan */
+    .background-blur {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      backdrop-filter: blur(5px);
+      z-index: 1;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+<body>
+<!-- Contenu d'arrière-plan -->
+<nav class="navbar">
+  <a href="#" class="logo">
+    <img src="../../../static/photos/logo.jpg" alt="Fusion Logo">
+    <span style="color: white; font-size: 20px;">Fusion</span>
+  </a>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Fusionner image</a>
+    <a href="#">À propos</a>
+    <a href="#">Se connecter</a>
+    <a href="#" class="btn-signup">S'inscrire</a>
+  </div>
+</nav>
+
+<div class="main-content">
+  <div class="text-content">
+    <h1>Fusionner image en ligne en quelques secondes</h1>
+    <p>Créez des compositions visuelles uniques en quelques secondes, simplement et rapidement. Téléchargez vos photos et laissez notre application faire le reste.</p>
+    <button class="btn-fusion">Fusionner maintenant</button>
+  </div>
+  <div class="image-collage">
+    <img src="../../../static/photos/fusion.png" alt="Photo Collection" class="photos">
+  </div>
+</div>
+
+<!-- Modal de login -->
+<div class="login-modal">
+  <h2>Commencez avec Fusion</h2>
+  <form class="login-form" method="post" action="{% url 'signup' %}">
+  {% csrf_token %}
+  <input type="text" name="username" placeholder="Username" required>
+    <input type="email" name="email" placeholder="E-mail" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <input type="password" name="password2" placeholder="Repeat Password" required>
+    <button type="submit"  class="login-btn">S'inscrire</button>
+  </form>
+  <div class="social-login">
+    <span>or :</span>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-github"></i></a>
+    </div>
+  </div>
+</div>
+{% if messages %}
+<div>
+  {% for message in messages %}
+  <p style="color: red;">{{ message }}</p>
+  {% endfor %}
+</div>
+{% endif %}
+</body>
+</html>
